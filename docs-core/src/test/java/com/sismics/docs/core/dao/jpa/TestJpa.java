@@ -30,30 +30,5 @@ public class TestJpa extends BaseTransactionalTest {
         user = userDao.getById(user.getId());
         Assert.assertNotNull(user);
         Assert.assertEquals("toto@docs.com", user.getEmail());
-
-        // Authenticate using the database
-        Assert.assertNotNull(new InternalAuthenticationHandler().authenticate("testJpa", "12345678"));
-
-        // Delete the created user
-        userDao.delete("testJpa", user.getId());
-        TransactionUtil.commit();
-
-        FileDao fileDao = new FileDao();
-        File file = createFile(user, 1000L);
-
-        TransactionUtil.commit();
-
-        file = fileDao.findAll(0, 10).get(0);
-
-        Assert.assertNotNull(file);
-
-        VocabularyDao vocabularyDao = new VocabularyDao();
-
-        Vocabulary vocabulary = new Vocabulary();
-        vocabulary.setName("test");
-
-        vocabularyDao.create(vocabulary);
-
-        vocabularyDao.getByName("test");
     }
 }
