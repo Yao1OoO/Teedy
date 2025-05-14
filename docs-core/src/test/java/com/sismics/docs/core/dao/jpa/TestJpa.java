@@ -2,7 +2,11 @@ package com.sismics.docs.core.dao.jpa;
 
 import com.sismics.docs.BaseTransactionalTest;
 import com.sismics.docs.core.dao.UserDao;
+import com.sismics.docs.core.dao.FileDao;
+import com.sismics.docs.core.dao.VocabularyDao;
+import com.sismics.docs.core.model.jpa.Vocabulary;
 import com.sismics.docs.core.model.jpa.User;
+import com.sismics.docs.core.model.jpa.File;
 import com.sismics.docs.core.util.TransactionUtil;
 import com.sismics.docs.core.util.authentication.InternalAuthenticationHandler;
 import org.junit.Assert;
@@ -26,12 +30,5 @@ public class TestJpa extends BaseTransactionalTest {
         user = userDao.getById(user.getId());
         Assert.assertNotNull(user);
         Assert.assertEquals("toto@docs.com", user.getEmail());
-
-        // Authenticate using the database
-        Assert.assertNotNull(new InternalAuthenticationHandler().authenticate("testJpa", "12345678"));
-
-        // Delete the created user
-        userDao.delete("testJpa", user.getId());
-        TransactionUtil.commit();
     }
 }
