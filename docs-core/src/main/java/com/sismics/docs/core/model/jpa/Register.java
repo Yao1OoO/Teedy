@@ -15,12 +15,6 @@ public class Register {
     @Column(name = "R_ID")
     private String id;
     /**
-     * Role ID.
-     */
-    @Column(name = "R_IDROLE_C", nullable = false, length = 36)
-    private String roleId;
-
-    /**
      * User's username.
      */
     @Column(name = "R_USERNAME_C", nullable = false, length = 50)
@@ -33,40 +27,10 @@ public class Register {
     private String password;
 
     /**
-     * User's private key.
-     */
-    @Column(name = "R_PRIVATEKEY_C", nullable = false, length = 100)
-    private String privateKey;
-
-    /**
-     * False when the user passed the onboarding.
-     */
-    @Column(name = "R_ONBOARDING_B", nullable = false)
-    private boolean onboarding;
-
-    /**
-     * TOTP secret key.
-     */
-    @Column(name = "R_TOTPKEY_C", length = 100)
-    private String totpKey;
-
-    /**
      * Email address.
      */
     @Column(name = "R_EMAIL_C", nullable = false, length = 100)
     private String email;
-
-    /**
-     * Storage quota.
-     */
-    @Column(name = "R_STORAGEQUOTA_N", nullable = false)
-    private Long storageQuota;
-
-    /**
-     * Storage current usage.
-     */
-    @Column(name = "R_STORAGECURRENT_N", nullable = false)
-    private Long storageCurrent;
 
     /**
      * Creation date.
@@ -98,14 +62,6 @@ public class Register {
         return this;
     }
 
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public Register setRoleId(String roleId) {
-        this.roleId = roleId;
-        return this;
-    }
 
     public String getUsername() {
         return username;
@@ -158,51 +114,6 @@ public class Register {
 
     public Register setDisableDate(Date disableDate) {
         this.disableDate = disableDate;
-        return this;
-    }
-
-    public String getPrivateKey() {
-        return privateKey;
-    }
-
-    public Register setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
-        return this;
-    }
-
-    public Long getStorageQuota() {
-        return storageQuota;
-    }
-
-    public Register setStorageQuota(Long storageQuota) {
-        this.storageQuota = storageQuota;
-        return this;
-    }
-
-    public Long getStorageCurrent() {
-        return storageCurrent;
-    }
-
-    public Register setStorageCurrent(Long storageCurrent) {
-        this.storageCurrent = storageCurrent;
-        return this;
-    }
-
-    public String getTotpKey() {
-        return totpKey;
-    }
-
-    public Register setTotpKey(String totpKey) {
-        this.totpKey = totpKey;
-        return this;
-    }
-
-    public boolean isOnboarding() {
-        return onboarding;
-    }
-
-    public Register setOnboarding(boolean onboarding) {
-        this.onboarding = onboarding;
         return this;
     }
 

@@ -15,11 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class RegisterDao {
     private static final Logger log = LoggerFactory.getLogger(RegisterDao.class);
 
     public String create(Register register) throws Exception{
+        register.setId(UUID.randomUUID().toString());
+
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
         q.setParameter("username", register.getUsername());
@@ -36,8 +39,7 @@ public class RegisterDao {
 
         register.setCreateDate(new Date());
         register.setPassword(hashPassword(register.getPassword()));
-        register.setPrivateKey(EncryptionUtil.generatePrivateKey());
-        register.setStorageCurrent(0L);
+        register.setState("ACTIVE");
         em.persist(register);
 
         // Create audit log
