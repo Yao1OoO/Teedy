@@ -33,7 +33,7 @@ public class RegisterDao {
         if (l.size() > 0) {
             throw new Exception("AlreadyExistingUsername");
         }
-        q = em.createQuery("select r from Register r where r.username = :username");
+        q = em.createQuery("select r from Register r where r.username = :username and r.state != 'REJECTED'");
         q.setParameter("username", register.getUsername());
         l = q.getResultList();
         if (l.size() > 0) {

@@ -92,6 +92,32 @@ public class UserDao {
         
         return user.getId();
     }
+
+    public String createWithoutHash(User user, String userId) throws Exception {
+        // Create the user UUID
+        user.setId(UUID.randomUUID().toString());
+
+        // Checks for user unicity
+        EntityManager em = ThreadLocalContext.get().getEntityManager();
+        Query q = em.createQuery("select u from User u where u.username = :username and u.deleteDate is null");
+        q.setParameter("username", user.getUsername());
+        List<?> l = q.getResultList();
+        if (l.size() > 0) {
+            throw new Exception("AlreadyExistingUsername");
+        }
+
+        // Create the user
+        user.setCreateDate(new Date());
+        user.setPassword(user.getPassword());
+        user.setPrivateKey(EncryptionUtil.generatePrivateKey());
+        user.setStorageCurrent(0L);
+        em.persist(user);
+
+        // Create audit log
+        AuditLogUtil.create(user, AuditLogType.CREATE, userId);
+
+        return user.getId();
+    }
     
     /**
      * Updates a user.
