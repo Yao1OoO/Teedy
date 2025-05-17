@@ -1,16 +1,24 @@
 package com.sismics.docs.rest.resource;
 
+
 import com.sismics.docs.core.dao.RegisterDao;
+import com.sismics.docs.core.dao.dto.RegisterDto;
 import com.sismics.docs.core.model.jpa.Register;
+import com.sismics.docs.rest.constant.BaseFunction;
 import com.sismics.rest.exception.ClientException;
+import com.sismics.rest.exception.ForbiddenClientException;
 import com.sismics.rest.exception.ServerException;
 import com.sismics.rest.util.ValidationUtil;
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
 
 @Path("/register")
 public class RegisterResource extends BaseResource {
@@ -69,6 +77,36 @@ public class RegisterResource extends BaseResource {
         // Always return OK
         JsonObjectBuilder response = Json.createObjectBuilder()
                 .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
+
+    @GET
+    @Path("list")
+    public Response getALlRegisters(){
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+
+        if (!hasBaseFunction(BaseFunction.ADMIN)) {
+            throw new ClientException("ForbiddenError", "Not admin");
+        }
+
+
+        JsonArrayBuilder registers = Json.createArrayBuilder();
+
+
+       RegisterDao dao = new RegisterDao();
+        List<RegisterDto> registerList = dao.getAll();
+        for (RegisterDto registerDto: registerList) {
+            registers.add(Json.createObjectBuilder()
+                    .add("id", registerDto.getId())
+                    .add("username", registerDto.getUsername())
+                    .add("email", registerDto.getEmail())
+                    .add("create_date", registerDto.getCreateTimestamp()));
+        }
+
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("register", registers);
         return Response.ok().entity(response.build()).build();
     }
 

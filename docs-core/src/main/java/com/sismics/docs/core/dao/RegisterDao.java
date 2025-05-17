@@ -3,6 +3,7 @@ package com.sismics.docs.core.dao;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.common.base.Strings;
 import com.sismics.docs.core.constant.Constants;
+import com.sismics.docs.core.dao.dto.RegisterDto;
 import com.sismics.docs.core.model.jpa.Register;
 import com.sismics.docs.core.util.EncryptionUtil;
 import com.sismics.util.context.ThreadLocalContext;
@@ -13,6 +14,8 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -48,10 +51,20 @@ public class RegisterDao {
         return register.getId();
     }
 
-    public List<Register> getAll(){
+    public List<RegisterDto> getAll(){
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         TypedQuery<Register> q = em.createQuery("select r from Register r", Register.class);
-        return q.getResultList();
+        List<RegisterDto> l = new ArrayList<RegisterDto>();
+        for (Register register : q.getResultList()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setId(register.getId());
+            registerDto.setUsername(register.getUsername());
+            registerDto.setEmail(register.getEmail());
+            registerDto.setCreateTimestamp(register.getCreateDate().getTime());
+            registerDto.setState(register.getState());
+            l.add(registerDto);
+        }
+        return l;
     }
 
     public Register getById(String id) {

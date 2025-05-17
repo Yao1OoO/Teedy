@@ -24,22 +24,6 @@ public class RegisterDto {
     /**
      * Disable date of this user.
      */
-    private Long disableTimestamp;
-
-    /**
-     * Storage quota.
-     */
-    private Long storageQuota;
-
-    /**
-     * Storage current usage.
-     */
-    private Long storageCurrent;
-
-    /**
-     * TOTP key.
-     */
-    private String totpKey;
 
     private String state;
 
@@ -73,39 +57,6 @@ public class RegisterDto {
 
     public void setCreateTimestamp(Long createTimestamp) {
         this.createTimestamp = createTimestamp;
-    }
-
-    public Long getDisableTimestamp() {
-        return disableTimestamp;
-    }
-
-    public RegisterDto setDisableTimestamp(Long disableTimestamp) {
-        this.disableTimestamp = disableTimestamp;
-        return this;
-    }
-
-    public Long getStorageQuota() {
-        return storageQuota;
-    }
-
-    public void setStorageQuota(Long storageQuota) {
-        this.storageQuota = storageQuota;
-    }
-
-    public Long getStorageCurrent() {
-        return storageCurrent;
-    }
-
-    public void setStorageCurrent(Long storageCurrent) {
-        this.storageCurrent = storageCurrent;
-    }
-
-    public String getTotpKey() {
-        return totpKey;
-    }
-
-    public void setTotpKey(String totpKey) {
-        this.totpKey = totpKey;
     }
 
     public String getState(){
