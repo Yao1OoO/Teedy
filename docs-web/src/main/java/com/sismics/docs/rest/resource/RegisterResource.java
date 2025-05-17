@@ -1,9 +1,12 @@
 package com.sismics.docs.rest.resource;
 
 
+import com.sismics.docs.core.constant.Constants;
 import com.sismics.docs.core.dao.RegisterDao;
+import com.sismics.docs.core.dao.UserDao;
 import com.sismics.docs.core.dao.dto.RegisterDto;
 import com.sismics.docs.core.model.jpa.Register;
+import com.sismics.docs.core.model.jpa.User;
 import com.sismics.docs.rest.constant.BaseFunction;
 import com.sismics.rest.exception.ClientException;
 import com.sismics.rest.exception.ForbiddenClientException;
@@ -137,4 +140,75 @@ public class RegisterResource extends BaseResource {
         return Response.ok().entity(response.build()).build();
     }
 
+    @POST
+    @Path("accept")
+    public Response acceptRegister(
+            @FormParam("id") String id
+    ) throws Exception {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+
+        if (!hasBaseFunction(BaseFunction.ADMIN)) {
+            throw new ClientException("ForbiddenError", "Not admin");
+        }
+
+        RegisterDao dao = new RegisterDao();
+        Register register =dao.getById(id);
+        if (register == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        dao.updateState(id, "ACCEPTED");
+
+        // Create the user
+        User user = new User();
+        user.setRoleId(Constants.DEFAULT_USER_ROLE);
+        user.setUsername(register.getUsername());
+        user.setPassword(register.getPassword());
+        user.setEmail(register.getEmail());
+        user.setStorageQuota(10000000L);
+        user.setOnboarding(true);
+
+        // Create the user
+        UserDao userDao = new UserDao();
+        try {
+            userDao.createWithoutHash(user, principal.getId());
+        } catch (Exception e) {
+            if ("AlreadyExistingUsername".equals(e.getMessage())) {
+                throw new ClientException("AlreadyExistingUsername", "Login already used", e);
+            } else {
+                throw new ServerException("UnknownError", "Unknown server error", e);
+            }
+        }
+
+        // Always return OK
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+
+    }
+
+    @POST
+    @Path("reject")
+    public Response rejectRegister(
+            @FormParam("id") String id
+    ) throws Exception{
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+
+        if (!hasBaseFunction(BaseFunction.ADMIN)) {
+            throw new ClientException("ForbiddenError", "Not admin");
+        }
+
+        RegisterDao dao = new RegisterDao();
+        Register register =dao.getById(id);
+        if (register == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        dao.updateState(id, "REJECTED");
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    }
 }
