@@ -8,6 +8,7 @@
     "remember_me": "记住我",
     "submit": "登录",
     "login_as_guest": "以游客身份登录",
+    "register": "注册",
     "login_failed_title": "登录失败",
     "login_failed_message": "用户名或密码不正确",
     "password_lost_btn": "密码丢失？",
@@ -249,6 +250,10 @@
     "menu_server_logs": "服务器日志",
     "user": {
       "title": "用户 <small>管理</small>",
+      "requests" : "用户注册请求",
+      "action" : "操作",
+      "accept" : "允许注册",
+      "reject" : "拒绝注册",
       "add_user": "添加用户",
       "username": "用户名",
       "create_date": "创建日期",
@@ -491,6 +496,13 @@
     "next": "下一个",
     "first": "第一",
     "last": "持续"
+  },
+  "register": {
+    "title": "注册",
+    "message": "请输入您的信息,管理员将会审核",
+    "username": "用户名",
+    "email": "邮箱",
+    "password": "密码"
   },
   "ok": "确认",
   "cancel": "取消",
