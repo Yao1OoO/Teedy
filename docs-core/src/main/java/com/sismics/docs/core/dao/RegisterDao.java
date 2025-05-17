@@ -67,6 +67,22 @@ public class RegisterDao {
         return l;
     }
 
+    public List<RegisterDto> getActive(){
+        EntityManager em = ThreadLocalContext.get().getEntityManager();
+        TypedQuery<Register> q = em.createQuery("select r from Register r where r.state = 'ACTIVE'", Register.class);
+        List<RegisterDto> l = new ArrayList<>();
+        for (Register register : q.getResultList()) {
+            RegisterDto registerDto = new RegisterDto();
+            registerDto.setId(register.getId());
+            registerDto.setUsername(register.getUsername());
+            registerDto.setEmail(register.getEmail());
+            registerDto.setCreateTimestamp(register.getCreateDate().getTime());
+            registerDto.setState(register.getState());
+            l.add(registerDto);
+        }
+        return l;
+    }
+
     public Register getById(String id) {
         EntityManager em = ThreadLocalContext.get().getEntityManager();
         try {

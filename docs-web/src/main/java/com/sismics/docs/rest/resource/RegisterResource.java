@@ -91,9 +91,7 @@ public class RegisterResource extends BaseResource {
             throw new ClientException("ForbiddenError", "Not admin");
         }
 
-
         JsonArrayBuilder registers = Json.createArrayBuilder();
-
 
        RegisterDao dao = new RegisterDao();
         List<RegisterDto> registerList = dao.getAll();
@@ -102,9 +100,38 @@ public class RegisterResource extends BaseResource {
                     .add("id", registerDto.getId())
                     .add("username", registerDto.getUsername())
                     .add("email", registerDto.getEmail())
-                    .add("create_date", registerDto.getCreateTimestamp()));
+                    .add("create_date", registerDto.getCreateTimestamp())
+                    .add("state", registerDto.getState()));
         }
 
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("register", registers);
+        return Response.ok().entity(response.build()).build();
+    }
+
+    @GET
+    @Path("list/active")
+    public Response getActiveRegister(){
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+
+        if (!hasBaseFunction(BaseFunction.ADMIN)) {
+            throw new ClientException("ForbiddenError", "Not admin");
+        }
+
+        JsonArrayBuilder registers = Json.createArrayBuilder();
+
+        RegisterDao dao = new RegisterDao();
+        List<RegisterDto> registerList = dao.getActive();
+        for (RegisterDto registerDto: registerList) {
+            registers.add(Json.createObjectBuilder()
+                    .add("id", registerDto.getId())
+                    .add("username", registerDto.getUsername())
+                    .add("email", registerDto.getEmail())
+                    .add("create_date", registerDto.getCreateTimestamp()));
+
+        }
         JsonObjectBuilder response = Json.createObjectBuilder()
                 .add("register", registers);
         return Response.ok().entity(response.build()).build();
