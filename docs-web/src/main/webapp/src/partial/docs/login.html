@@ -80,6 +80,11 @@
           <button type="submit" class="btn btn-default btn-block" ng-if="app.guest_login" ng-click="loginAsGuest()">
             <span class="fas fa-user"></span> {{ 'login.login_as_guest' | translate }}
           </button>
+
+          <button type="submit" class="btn btn-primary" ng-click="register()">
+            <span class="fas fa-envelope"></span> {{ 'login.register' | translate }}
+          </button>
+
         </form>
       </div>
     </div>

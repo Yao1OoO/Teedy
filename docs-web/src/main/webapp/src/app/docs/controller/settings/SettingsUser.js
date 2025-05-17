@@ -7,6 +7,14 @@ angular.module('docs').controller('SettingsUser', function($scope, $state, Resta
   /**
    * Load users from server.
    */
+
+  $scope.loadRegisterRequests = function() {
+    Restangular.one('register/list/active').get().then(function(data) {
+      console.log('API响应数据:', data);
+      $scope.registerRequests = data.register;
+    })
+  }
+
   $scope.loadUsers = function() {
     Restangular.one('user/list').get({
       sort_column: 1,
@@ -15,7 +23,8 @@ angular.module('docs').controller('SettingsUser', function($scope, $state, Resta
       $scope.users = data.users;
     });
   };
-  
+
+  $scope.loadRegisterRequests();
   $scope.loadUsers();
   
   /**
@@ -24,4 +33,22 @@ angular.module('docs').controller('SettingsUser', function($scope, $state, Resta
   $scope.editUser = function(user) {
     $state.go('settings.user.edit', { username: user.username });
   };
+
+  $scope.accept = function(id) {
+    Restangular.one('register').post('accept', {
+      id: id
+    }).then(function(data){
+      $scope.loadRegisterRequests();
+      $scope.loadUsers();
+    })
+  }
+
+  $scope.reject = function(id) {
+    Restangular.one('register').post('reject', {
+      id: id
+    }).then(function(data){
+      $scope.loadRegisterRequests();
+      $scope.loadUsers();
+    })
+  }
 });

@@ -8,6 +8,7 @@
     "remember_me": "Remember me",
     "submit": "Sign in",
     "login_as_guest": "Login as guest",
+    "register": "Register",
     "login_failed_title": "Login failed",
     "login_failed_message": "Username or password invalid",
     "password_lost_btn": "Password lost?",
@@ -297,6 +298,10 @@
     },
     "user": {
       "title": "Users management",
+      "requests" : "Register request",
+      "action" : "Action",
+      "accept" : "Accept",
+      "reject" : "Reject",
       "add_user": "Add a user",
       "username": "Username",
       "create_date": "Create date",
@@ -620,6 +625,13 @@
       "title": "Tags",
       "description": "Documents can be organized in tags (which are like super-folders). Create them here."
     }
+  },
+  "register": {
+    "title": "Register",
+    "message": "Please enter your information for administrator review.",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password"
   },
   "yes": "Yes",
   "no": "No",
