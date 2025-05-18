@@ -41,6 +41,25 @@
     </ul>
     &nbsp;
   </div>
+  <div class="pull-right dropdown" uib-dropdown>
+    <button class="btn btn-default" uib-dropdown-toggle>
+      <span class="fas fa-pencil-alt"></span>
+      {{ 'translate' | translate }}
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li>
+        <a href ng-click="translate2ch(document)">>
+          {{ 'translate2ch' | translate }}
+        </a>
+      </li>
+      <li>
+        <a href ng-click="translate2en(document)">
+          {{ 'translate2en' | translate }}
+        </a>
+      </li>
+    </ul>
+  </div>
 
 	<div class="page-header">
 	  <h1>

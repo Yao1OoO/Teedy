@@ -1,4 +1,13 @@
 <p class="well-sm" ng-bind-html="document.description"></p>
+
+<!-- 新增翻译结果显示 -->
+<div class="well-sm">
+  <h4>{{ 'document.translation' | translate }}</h4>
+  <div class="well-sm">
+    <div ng-bind-html="document.translatedDescription"></div>
+  </div>
+</div>
+
 <dl class="dl-horizontal">
   <dt ng-if="document.subject">{{ 'document.subject' | translate }}</dt>
   <dd ng-if="document.subject">{{ document.subject }}</dd>

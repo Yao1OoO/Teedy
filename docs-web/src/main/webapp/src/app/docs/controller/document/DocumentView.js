@@ -142,6 +142,42 @@ angular.module('docs').controller('DocumentView', function ($scope, $rootScope, 
     return false;
   };
 
+
+
+  $scope.translate2en = function (document){
+    console.log('翻译为英文', document.description);
+    $scope.isTranslating = true; // 加载状态
+    Restangular.all('document/translate').post({
+      text: document.description,  // 假设这是要翻译的原文
+      lan: 'en'          // 目标语言
+    }).then(function(response) {
+       document.translatedDescription= response.translatedText; // 更新翻译结果
+      Notification.success('翻译成功');
+    }).catch(function(error) {
+      Notification.error('翻译失败: ' + (error.data.message || '未知错误'));
+      console.error('翻译错误:', error);
+    }).finally(function() {
+      $scope.isTranslating = false;
+    });
+  }
+
+  $scope.translate2ch = function (document){
+    console.log('翻译为中文', document.description);
+    $scope.isTranslating = true; // 加载状态
+    Restangular.all('document/translate').post({
+      text: document.description,  // 假设这是要翻译的原文
+      lan: 'ch'          // 目标语言
+    }).then(function(response) {
+      document.translatedDescription= response.translatedText; // 更新翻译结果
+      Notification.success('翻译成功');
+    }).catch(function(error) {
+      Notification.error('翻译失败: ' + (error.data.message || '未知错误'));
+      console.error('翻译错误:', error);
+    }).finally(function() {
+      $scope.isTranslating = false;
+    });
+  }
+
   /**
    * Validate the workflow.
    */

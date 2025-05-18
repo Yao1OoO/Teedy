@@ -78,6 +78,7 @@
     "upgrade_quota": "如需要升级您的限额, 请联系管理员",
     "quota": "{{ current | number: 0 }}MB ({{ current | number: 1 }}%) 已使用 {{ total | number: 0 }}MB",
     "count": "找到{{ count }}个文件",
+    "translation": "翻译",
     "view": {
       "delete_comment_title": "删除评论",
       "delete_comment_message": "您是否确认删除此评论?",
@@ -519,5 +520,8 @@
   "loading": "加载中...",
   "send": "发送",
   "enabled": "激活",
-  "disabled": "未激活"
+  "disabled": "未激活",
+  "translate": "翻译为",
+  "translate2en": "翻译为英文",
+  "translate2ch": "翻译为中文"
 }
