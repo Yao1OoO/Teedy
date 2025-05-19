@@ -88,6 +88,7 @@
     "quota": "{{ current | number: 0 }}MB ({{ percent | number: 1 }}%) used on {{ total | number: 0 }}MB",
     "count": "{{ count }} document{{ count > 1 ? 's' : '' }} found",
     "last_updated": "Last updated {{ date | timeAgo: dateFormat }}",
+    "translation" : "Translation",
     "view": {
       "delete_comment_title": "Delete comment",
       "delete_comment_message": "Do you really want to delete this comment?",
@@ -652,5 +653,8 @@
   "loading": "Loading...",
   "send": "Send",
   "enabled": "Enabled",
-  "disabled": "Disabled"
+  "disabled": "Disabled",
+  "translate": "Translate to",
+  "translate2en": "Translate to English",
+  "translate2ch": "Translate to Chinese"
 }

@@ -1,4 +1,13 @@
 <p class="well-sm" ng-bind-html="document.description"></p>
+
+<!-- 新增翻译结果显示 -->
+<div class="well-sm">
+  <h4>{{ 'document.translation' | translate }}</h4>
+  <div class="well-sm">
+    <div ng-bind-html="document.translatedDescription"></div>
+  </div>
+</div>
+
 <dl class="dl-horizontal">
   <dt ng-if="document.subject">{{ 'document.subject' | translate }}</dt>
   <dd ng-if="document.subject">{{ document.subject }}</dd>
@@ -95,6 +104,17 @@
                   <a ng-href="../api/file/{{ file.id }}/data" target="_blank">
                     <span class="fas fa-download"></span>
                     {{ 'download' | translate }}
+                  </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+                  <a href ng-click="translateFile2en(file)">
+                    {{ 'translate2en' | translate }}
+                  </a>
+                </li>
+                <li>
+                  <a href ng-click="translateFile2ch(file)">
+                    {{ 'translate2ch' | translate }}
                   </a>
                 </li>
                 <li role="separator" class="divider"></li>

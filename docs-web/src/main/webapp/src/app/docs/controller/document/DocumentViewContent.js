@@ -224,4 +224,37 @@ angular.module('docs').controller('DocumentViewContent', function ($scope, $root
       }
     })
   };
+
+  $scope.translateFile2en = function (file){
+    console.log('翻译为英文', document.description);
+    $scope.isTranslating = true; // 加载状态
+    Restangular.all('document/translate/file').post({
+      file: File,  // 假设这是要翻译的原文
+      lan: 'en'          // 目标语言
+    }).then(function(response) {
+
+    }).catch(function(error) {
+      Notification.error('翻译失败: ' + (error.data.message || '未知错误'));
+      console.error('翻译错误:', error);
+    }).finally(function() {
+      $scope.isTranslating = false;
+    });
+  }
+
+  $scope.translateFile2ch = function (File){
+    console.log('翻译为中文', document.description);
+    $scope.isTranslating = true; // 加载状态
+    Restangular.all('document/translate/file').post({
+      file: File,  // 假设这是要翻译的原文
+      lan: 'ch'          // 目标语言
+    }).then(function(response) {
+
+    }).catch(function(error) {
+      Notification.error('翻译失败: ' + (error.data.message || '未知错误'));
+      console.error('翻译错误:', error);
+    }).finally(function() {
+      $scope.isTranslating = false;
+    });
+  }
+
 });

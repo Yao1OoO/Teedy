@@ -55,7 +55,6 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -68,6 +67,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONObject;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -75,19 +75,19 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.URI;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.time.Duration;
 
 /**
  * Document REST resources.
@@ -1028,6 +1028,75 @@ public class DocumentResource extends BaseResource {
         return Response.ok().entity(response.build()).build();
     }
 
+    @POST
+    @Path("translate")
+    public Response translate(@FormParam("text") String text,
+                              @FormParam("lan") String language) {
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+        ResourceBundle configBundle = ConfigUtil.getConfigBundle();
+        String apiid = configBundle.getString("apiid");
+        String apikey = configBundle.getString("apikey");
+
+        String fromLang;
+        String toLang;
+        switch (language) {
+            case "en":
+                fromLang = "zh-CHS";
+                toLang = "en";
+                break;
+            case "ch":
+                fromLang = "en";
+                toLang = "zh-CHS";
+                break;
+            default:
+                return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        String salt = UUID.randomUUID().toString();
+        String currentTime = String.valueOf(System.currentTimeMillis() / 1000);
+        String signString = apiid + truncate(text) + salt + currentTime + apikey;
+
+        String signature = getDigest(signString);
+
+        Map<String, String> formData = new HashMap<>();
+        formData.put("q", text);
+        formData.put("from", fromLang);
+        formData.put("to", toLang);
+        formData.put("appKey", apiid);
+        formData.put("salt", salt);
+        formData.put("sign", signature);
+        formData.put("signType", "v3");
+        formData.put("curtime", currentTime);
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create("https://openapi.youdao.com/translate_html"))
+                .timeout(Duration.ofMinutes(1))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(getFormDataAsString(formData)))
+                .build();
+
+        System.out.println(signString);
+
+        try {
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            JSONObject json = new JSONObject(httpResponse.body());
+
+            if (json.has("data")) {
+                String translatedText = json.getJSONObject("data").getString("translation");
+                JsonObjectBuilder responseJson = Json.createObjectBuilder()
+                        .add("translatedText", translatedText);
+                return Response.ok().entity(responseJson.build()).build();
+            }
+            throw new Exception("Translation failed: No 'data' field in response.");
+        } catch (Exception e) {
+            throw new ClientException(e.getMessage(), e.getMessage(), e);
+        }
+    }
+
     /**
      * Update tags list on a document.
      *
@@ -1096,5 +1165,55 @@ public class DocumentResource extends BaseResource {
                     .add("color", tagDto.getColor()));
         }
         return tags;
+    }
+
+    private static String truncate(String input) {
+        if (input == null) {
+            return null;
+        }
+        int length = input.length();
+        if (length <= 20) {
+            return input;
+        }
+        return input.substring(0, 10) + length + input.substring(length - 10);
+    }
+
+    public static String getDigest(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        final char[] hexDigits = "0123456789ABCDEF".toCharArray();
+        byte[] inputBytes = input.getBytes();
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(inputBytes);
+            byte[] hashBytes = digest.digest();
+            char[] result = new char[hashBytes.length * 2];
+            int index = 0;
+
+            for (byte b : hashBytes) {
+                result[index++] = hexDigits[(b >>> 4) & 0xF];
+                result[index++] = hexDigits[b & 0xF];
+            }
+
+            return new String(result);
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
+    private static String getFormDataAsString(Map<String, String> formData) {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : formData.entrySet()) {
+            if (builder.length() > 0) {
+                builder.append("&");
+            }
+            builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
+            builder.append("=");
+            builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
+        }
+        return builder.toString();
     }
 }

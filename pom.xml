@@ -641,6 +641,12 @@
         <version>${org.apache.directory.server.apacheds-all.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20160810</version>
+      </dependency>
+
       <!-- ImageIO plugins -->
       <!-- JPEG -->
       <dependency>
