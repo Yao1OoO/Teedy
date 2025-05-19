@@ -142,8 +142,6 @@ angular.module('docs').controller('DocumentView', function ($scope, $rootScope, 
     return false;
   };
 
-
-
   $scope.translate2en = function (document){
     console.log('翻译为英文', document.description);
     $scope.isTranslating = true; // 加载状态

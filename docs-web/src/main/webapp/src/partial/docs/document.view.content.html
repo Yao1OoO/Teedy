@@ -108,6 +108,17 @@
                 </li>
                 <li role="separator" class="divider"></li>
                 <li>
+                  <a href ng-click="translateFile2en(file)">
+                    {{ 'translate2en' | translate }}
+                  </a>
+                </li>
+                <li>
+                  <a href ng-click="translateFile2ch(file)">
+                    {{ 'translate2ch' | translate }}
+                  </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
                   <a href ng-click="renameFile(file)">
                     <span class="fas fa-pencil-alt"></span>
                     {{ 'rename' | translate }}
